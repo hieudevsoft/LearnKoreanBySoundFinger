@@ -8,9 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.net.Network
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -214,7 +212,7 @@ class MainActivity : AppCompatActivity(), HandFingerCallback {
                 dialog.findViewById<Button>(R.id.btnOk).setOnClickListener {
                     controlCompleteLern = true
                     try {
-
+                        createVibator()
                         val number = edtNumber.text.toString().toInt()
                         listTemp.forEach {
                             it.isCorrect = null
@@ -258,6 +256,7 @@ class MainActivity : AppCompatActivity(), HandFingerCallback {
     }
 
     fun clickOkDialogResult() {
+        createVibator()
         adapter.setEnabledFlipView(true)
         AwesomeDialogObject.showDialog(
             activity = this@MainActivity,
@@ -270,6 +269,16 @@ class MainActivity : AppCompatActivity(), HandFingerCallback {
             textNegative = "",
             callBackNegative = {}
         )
+    }
+
+    fun createVibator(){
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(TAG, "clickOkDialogResult: vo day")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                vibrator.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.EFFECT_TICK))
+            } else vibrator.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE))
+        } else vibrator.vibrate(500)
     }
 
     private fun getDataCorrect() {
